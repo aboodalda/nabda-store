@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نبضة | متجر الجوالات الحديثة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF9FF;
+    --panel:#FFFFFF;
+    --ink:#1B1330;
+    --ink-soft:#5B5470;
+    --violet:#6C3CE9;
+    --violet-deep:#4B21B8;
+    --coral:#FF6A4D;
+    --teal:#00C2A8;
+    --sun:#FFC93C;
+    --line:#EAE6F7;
+    --radius:20px;
+    --shadow:0 20px 40px -20px rgba(76,33,184,0.25);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{ font-family:'Tajawal', sans-serif; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  a{color:inherit; text-decoration:none;}
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+
+  /* ===== Top utility bar ===== */
+  .topbar{ background:linear-gradient(90deg, var(--violet), var(--violet-deep)); color:#fff; position:relative; z-index:41; }
+  .topbar-inner{
+    max-width:1180px; margin:0 auto; padding:9px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .topbar-search{
+    display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.15);
+    border-radius:999px; padding:7px 16px; flex:1; max-width:420px;
+  }
+  .topbar-search input{
+    background:none; border:none; color:#fff; font-family:inherit; font-size:13px; width:100%;
+  }
+  .topbar-search input::placeholder{ color:rgba(255,255,255,0.75); }
+  .topbar-search input:focus{ outline:none; }
+  .topbar-links{ display:flex; gap:18px; font-weight:500; font-size:13px; opacity:0.92; }
+  @media (max-width:700px){ .topbar-links{ display:none; } }
+
+  /* ===== Header ===== */
+  header{
+    position:sticky; top:0; z-index:40;
+    background:rgba(250,249,255,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{
+    max-width:1180px; margin:0 auto; padding:16px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-weight:900; font-size:22px; }
+  .logo .dot{
+    width:12px;height:12px;border-radius:50%;
+    background:linear-gradient(135deg, var(--violet), var(--coral));
+    box-shadow:0 0 0 4px rgba(108,60,233,0.15);
+  }
+  nav{ display:flex; align-items:center; gap:28px; font-weight:500; color:var(--ink-soft); }
+  nav a:hover{ color:var(--violet); }
+  .nav-item{ position:relative; }
+  .nav-drop-btn{ display:flex; align-items:center; gap:4px; font-weight:500; color:var(--ink-soft); font-size:15px; font-family:inherit; }
+  .nav-drop-btn:hover{ color:var(--violet); }
+  .caret{ font-size:10px; transition:transform .2s ease; }
+  .nav-item.open .caret{ transform:rotate(180deg); }
+  .dropdown-menu{
+    position:absolute; top:calc(100% + 16px); right:0; background:var(--panel); border:1px solid var(--line);
+    border-radius:16px; box-shadow:var(--shadow); padding:8px; min-width:230px; z-index:50;
+    opacity:0; pointer-events:none; transform:translateY(-8px); transition:.2s ease;
+  }
+  .dropdown-menu.open{ opacity:1; pointer-events:all; transform:translateY(0); }
+  .dropdown-item{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 12px; border-radius:10px;
+    font-size:14px; font-weight:600; transition:.15s ease;
+  }
+  .dropdown-item:hover{ background:var(--bg); }
+  .dropdown-item-left{ display:flex; align-items:center; }
+  .dropdown-item .swatch{ width:10px; height:10px; border-radius:50%; margin-left:10px; flex-shrink:0; }
+  .dropdown-item .count{ font-size:12px; color:var(--ink-soft); }
+  .cart-btn{
+    position:relative; display:flex; align-items:center; gap:8px;
+    background:var(--ink); color:#fff; padding:10px 18px; border-radius:999px;
+    font-weight:600; font-size:14px;
+  }
+  .cart-count{
+    position:absolute; top:-8px; left:-8px;
+    background:var(--coral); color:#fff; font-size:11px; font-weight:700;
+    width:20px; height:20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative; max-width:1180px; margin:0 auto; padding:64px 24px 40px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
+    overflow:hidden;
+  }
+  .blob{
+    position:absolute; z-index:-1; filter:blur(60px); opacity:0.55;
+    animation:morph 12s ease-in-out infinite;
+  }
+  .blob.b1{ width:420px; height:420px; top:-120px; right:-80px; background:radial-gradient(circle, var(--violet), transparent 70%); }
+  .blob.b2{ width:320px; height:320px; bottom:-100px; left:-60px; background:radial-gradient(circle, var(--teal), transparent 70%); animation-delay:3s; }
+  @keyframes morph{
+    0%,100%{ border-radius:42% 58% 65% 35% / 45% 40% 60% 55%; transform:scale(1); }
+    50%{ border-radius:60% 40% 35% 65% / 55% 65% 35% 45%; transform:scale(1.08); }
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--panel); border:1px solid var(--line); border-radius:999px;
+    padding:6px 14px; font-size:13px; font-weight:600; color:var(--violet-deep);
+    box-shadow:var(--shadow); margin-bottom:20px;
+  }
+  .hero h1{
+    font-size:52px; line-height:1.15; font-weight:900; margin-bottom:18px;
+  }
+  .hero h1 span{
+    background:linear-gradient(90deg, var(--violet), var(--coral));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{ font-size:17px; color:var(--ink-soft); max-width:460px; margin-bottom:28px; line-height:1.8; }
+  .hero-ctas{ display:flex; gap:14px; }
+  .btn-primary{
+    background:var(--ink); color:#fff; padding:14px 28px; border-radius:14px; font-weight:700;
+    transition:transform .15s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-ghost{
+    background:var(--panel); border:1px solid var(--line); padding:14px 24px; border-radius:14px; font-weight:600;
+  }
+  .hero-stats{ display:flex; gap:28px; margin-top:36px; }
+  .hero-stats div b{ font-family:'JetBrains Mono', monospace; font-size:24px; display:block; color:var(--violet-deep); }
+  .hero-stats div span{ font-size:12px; color:var(--ink-soft); }
+
+  .hero-visual{ position:relative; height:420px; display:flex; align-items:center; justify-content:center; }
+  .hero-slide{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    opacity:0; transform:scale(0.9) translateY(14px); transition:opacity .6s ease, transform .6s ease;
+    pointer-events:none;
+  }
+  .hero-slide.active{ opacity:1; transform:scale(1) translateY(0); pointer-events:all; }
+  .hero-phone{
+    width:210px; height:420px; position:relative;
+    filter:drop-shadow(0 30px 40px rgba(20,10,50,0.45));
+  }
+  .hero-phone svg{ display:block; }
+  .hero-slide-info{
+    position:absolute; bottom:6px; background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:12px 20px; box-shadow:var(--shadow); text-align:center; white-space:nowrap;
+  }
+  .hero-slide-info b{ font-size:15px; display:block; }
+  .hero-dots{ position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:2; }
+  .hero-dot{ width:8px; height:8px; border-radius:50%; background:var(--line); transition:.2s ease; cursor:pointer; }
+  .hero-dot.active{ background:var(--violet); width:24px; border-radius:6px; }
+
+  @keyframes heroIn{ from{ opacity:0; transform:translateY(18px); } to{ opacity:1; transform:translateY(0); } }
+  .hero-copy > *{ animation:heroIn .7s ease both; }
+  .hero-copy > *:nth-child(1){ animation-delay:.05s; }
+  .hero-copy > *:nth-child(2){ animation-delay:.15s; }
+  .hero-copy > *:nth-child(3){ animation-delay:.25s; }
+  .hero-copy > *:nth-child(4){ animation-delay:.35s; }
+  .hero-copy > *:nth-child(5){ animation-delay:.45s; }
+
+  /* ===== Scroll reveal ===== */
+  .reveal{ opacity:0; transform:translateY(26px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  /* ===== Filters ===== */
+  .filters{ max-width:1180px; margin:0 auto; padding:10px 24px 30px; display:flex; gap:10px; flex-wrap:wrap; }
+  .chip{
+    padding:9px 18px; border-radius:999px; border:1px solid var(--line); background:var(--panel);
+    font-size:14px; font-weight:600; color:var(--ink-soft); transition:.15s ease;
+  }
+  .chip.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .chip:hover{ border-color:var(--violet); }
+
+  /* ===== Grid ===== */
+  .grid-container{
+    max-width:1180px; margin:0 auto; padding:0 24px 80px;
+  }
+  .grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;
+  }
+  .brand-section{ margin-bottom:44px; }
+  .brand-section:last-child{ margin-bottom:0; }
+  .brand-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    border-bottom:2px solid var(--ink); padding-bottom:10px; margin-bottom:20px;
+  }
+  .brand-head h2{ font-size:24px; font-weight:900; }
+  .brand-count{ font-size:13px; color:var(--ink-soft); }
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; display:flex; flex-direction:column; gap:14px;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{ transform:translateY(-4px); box-shadow:var(--shadow); }
+  .card-top{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .badge{
+    font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; color:#fff;
+  }
+  .card-media{
+    height:150px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .card-media img{ width:100%; height:100%; object-fit:contain; padding:10px; }
+  .mini-phone{
+    width:56px; height:112px; border-radius:12px; border:4px solid rgba(0,0,0,0.35);
+  }
+  .card h3{ font-size:19px; font-weight:700; }
+  .card .tagline{ font-size:13px; color:var(--ink-soft); margin-top:-8px; }
+
+  /* Signature spec strip */
+  .spec-strip{
+    display:flex; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line);
+    padding:10px 0;
+  }
+  .spec-strip div{ flex:1; text-align:center; border-right:1px dashed var(--line); }
+  .spec-strip div:first-child{ border-right:none; }
+  .spec-strip b{ font-family:'JetBrains Mono', monospace; font-size:16px; display:block; }
+  .spec-strip span{ font-size:10px; color:var(--ink-soft); }
+
+  .card-bottom{ display:flex; align-items:center; justify-content:space-between; }
+  .price{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:19px; }
+  .price span{ font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Sans Arabic'; }
+  .add-btn{
+    background:var(--violet); color:#fff; padding:10px 18px; border-radius:12px; font-weight:700; font-size:14px;
+    transition:.15s ease;
+  }
+  .add-btn:hover{ background:var(--violet-deep); }
+
+  /* ===== Cart Drawer ===== */
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,10,40,0.4); z-index:50;
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .overlay.show{ opacity:1; pointer-events:all; }
+  .drawer{
+    position:fixed; top:0; left:0; height:100%; width:400px; max-width:90vw;
+    background:var(--panel); z-index:60; box-shadow:20px 0 50px rgba(0,0,0,0.15);
+    transform:translateX(-100%); transition:transform .3s ease;
+    display:flex; flex-direction:column;
+  }
+  .drawer.open{ transform:translateX(0); }
+  .drawer-head{ padding:22px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; }
+  .drawer-head h3{ font-size:20px; }
+  .close-x{ font-size:22px; color:var(--ink-soft); }
+  .drawer-items{ flex:1; overflow-y:auto; padding:16px 22px; display:flex; flex-direction:column; gap:14px; }
+  .empty-cart{ text-align:center; color:var(--ink-soft); padding:60px 20px; font-size:14px; }
+  .cart-item{ display:flex; gap:12px; align-items:center; border-bottom:1px solid var(--line); padding-bottom:14px; }
+  .cart-thumb{ width:52px; height:52px; border-radius:12px; flex-shrink:0; }
+  .cart-item-info{ flex:1; }
+  .cart-item-info h4{ font-size:14px; font-weight:600; }
+  .cart-item-info .p{ font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--violet-deep); }
+  .qty-box{ display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:10px; padding:4px 8px; }
+  .qty-box button{ font-weight:700; width:18px; }
+  .remove-btn{ color:var(--coral); font-size:12px; margin-top:4px; }
+  .drawer-foot{ padding:20px 22px; border-top:1px solid var(--line); }
+  .subtotal-row{ display:flex; justify-content:space-between; font-weight:700; margin-bottom:14px; font-size:16px; }
+  .checkout-btn{
+    width:100%; background:var(--ink); color:#fff; padding:14px; border-radius:14px; font-weight:700; font-size:15px;
+  }
+  .checkout-btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  /* ===== Modal ===== */
+  .modal{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-46%);
+    width:480px; max-width:92vw; background:var(--panel); border-radius:24px; z-index:70;
+    box-shadow:0 40px 80px -20px rgba(20,10,50,0.4); padding:30px;
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+  }
+  .modal.show{ opacity:1; pointer-events:all; transform:translate(-50%,-50%); }
+  .steps{ display:flex; gap:6px; margin-bottom:22px; }
+  .steps div{ flex:1; height:4px; border-radius:4px; background:var(--line); }
+  .steps div.active{ background:var(--violet); }
+  .modal h3{ font-size:22px; margin-bottom:6px; }
+  .modal .sub{ font-size:13px; color:var(--ink-soft); margin-bottom:20px; }
+  .field{ margin-bottom:14px; }
+  .field label{ font-size:13px; font-weight:600; display:block; margin-bottom:6px; }
+  .field input{
+    width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line);
+    font-family:inherit; font-size:14px; background:var(--bg);
+  }
+  .field input:focus{ outline:2px solid var(--violet); outline-offset:1px; }
+  .pay-options{ display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+  .pay-opt{
+    display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:14px; padding:14px;
+    cursor:pointer;
+  }
+  .pay-opt.selected{ border-color:var(--violet); background:#F4F0FE; }
+  .pay-opt input{ width:16px; height:16px; }
+  .modal-actions{ display:flex; gap:10px; margin-top:8px; }
+  .btn-secondary{ flex:1; padding:13px; border-radius:12px; border:1px solid var(--line); font-weight:600; }
+  .btn-confirm{ flex:2; padding:13px; border-radius:12px; background:var(--violet); color:#fff; font-weight:700; }
+  .success-icon{
+    width:70px; height:70px; border-radius:50%; background:var(--teal); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 20px;
+  }
+  .order-id{
+    background:var(--bg); border:1px dashed var(--line); border-radius:12px; padding:14px; text-align:center;
+    font-family:'JetBrains Mono', monospace; font-size:18px; font-weight:700; margin-bottom:20px; letter-spacing:1px;
+  }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:14px 24px; border-radius:14px; font-size:14px; font-weight:600;
+    z-index:120; opacity:0; transition:.25s ease; display:flex; align-items:center; gap:10px;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  footer{ text-align:center; padding:40px 20px; color:var(--ink-soft); font-size:13px; border-top:1px solid var(--line); }
+
+  @media (max-width:900px){
+    .hero{ grid-template-columns:1fr; }
+    .hero-visual{ height:320px; order:-1; }
+    .grid{ grid-template-columns:repeat(2,1fr); }
+    nav{ display:none; }
+  }
+  @media (max-width:560px){
+    .grid{ grid-template-columns:1fr; }
+    .hero h1{ font-size:36px; }
+    .hero-visual{ height:280px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .blob{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-search">
+      🔍 <input id="searchInput" type="text" placeholder="ابحث عن جهاز... مثال: آيفون، جالكسي، ريدمي" oninput="onSearch(this.value)">
+    </div>
+    <div class="topbar-links">
+      <span>🚚 توصيل خلال 24 ساعة</span>
+      <span>📞 تواصل معنا</span>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo"><span class="dot"></span> نبضة</div>
+    <nav>
+      <a href="#">الرئيسية</a>
+      <div class="nav-item" id="catDropdown">
+        <button class="nav-drop-btn" onclick="toggleCatMenu()">الأقسام <span class="caret">▾</span></button>
+        <div class="dropdown-menu" id="catMenu"></div>
+      </div>
+      <a href="#">العروض</a>
+      <a href="#">تواصل معنا</a>
+    </nav>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 السلة
+      <span class="cart-count mono" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="hero-copy">
+    <div class="eyebrow">⚡ وصل حديثًا — تشكيلة 2026</div>
+    <h1>جوالك الجديد<br><span>بنبضة وحدة.</span></h1>
+    <p>أحدث الأجهزة بأداء عالي وكاميرات احترافية وبطاريات تدوم طول يومك. اختر، قارن الأرقام، واطلب لباب بيتك.</p>
+    <div class="hero-ctas">
+      <a href="#grid" class="btn-primary">تصفح الجوالات</a>
+      <a href="#" class="btn-ghost">قارن المواصفات</a>
+    </div>
+    <div class="hero-stats">
+      <div><b>+12</b><span>موديل متوفر</span></div>
+      <div><b>24h</b><span>توصيل سريع</span></div>
+      <div><b>%100</b><span>ضمان أصلي</span></div>
+    </div>
+  </div>
+  <div class="hero-visual" id="heroVisual"></div>
+</section>
+
+<div class="filters" id="filters"></div>
+
+<div class="grid-container" id="grid"></div>
+
+<footer>
+  © 2026 نبضة للجوالات — جميع الأجهزة تجريبية لأغراض العرض فقط.
+</footer>
+
+<!-- Cart Drawer -->
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>سلة التسوق</h3>
+    <button class="close-x" onclick="closeAll()">✕</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot">
+    <div class="subtotal-row"><span>المجموع</span><span class="mono" id="subtotal">0 ر.س</span></div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="openCheckout()">إتمام الشراء</button>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="modal" id="modal">
+  <div id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK (compat build — simplest for plain JS, no bundler needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+/* =====================================================================
+   🔧 FIREBASE SETUP — this must match the config in admin.html exactly
+   (same project). This file only READS products/categories and WRITES
+   new orders — it never needs Firebase Authentication.
+===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyCMUBKn_pcfWAIHZ-wskknEL8UL3YhUjZM",
+  authDomain: "nabda-store-4be15.firebaseapp.com",
+  projectId: "nabda-store-4be15",
+  storageBucket: "nabda-store-4be15.firebasestorage.app",
+  messagingSenderId: "318901490815",
+  appId: "1:318901490815:web:74f1bd10c03394466bdb4a"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const productsCol = db.collection('products');
+const categoriesCol = db.collection('categories');
+const ordersCol = db.collection('orders');
+
+let ckData = {name:'', phone:'', address:''};
+
+/* Live data — populated in real time from Firestore (see initFirestoreSync below) */
+let PRODUCTS = [];
+let CATS = [{id:'all', label:'الكل'}];
+
+let cart = {};
+let activeCat = 'all';
+let selectedPay = null;
+let searchQuery = '';
+let heroIndex = 0;
+let heroTimer = null;
+
+/* ===== Firestore real-time sync =====
+   Any change made from the admin dashboard (admin.html) pushes instantly
+   to every customer's screen here — no page refresh needed. */
+function initFirestoreSync(){
+  categoriesCol.onSnapshot(snap => {
+    const liveCats = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    CATS = [{id:'all', label:'الكل'}, ...liveCats];
+    renderFilters();
+    renderCatMenu();
+    renderGrid();
+    renderHero();
+  }, err => console.error('categories sync error:', err));
+
+  productsCol.onSnapshot(snap => {
+    PRODUCTS = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    renderGrid();
+    renderHero();
+    renderCart();
+  }, err => console.error('products sync error:', err));
+}
+
+function renderFilters(){
+  const el = document.getElementById('filters');
+  el.innerHTML = CATS.map(c => `<button class="chip ${c.id===activeCat?'active':''}" onclick="setCat('${c.id}')">${c.label}</button>`).join('');
+}
+
+function setCat(id){
+  activeCat = id;
+  searchQuery = '';
+  const si = document.getElementById('searchInput');
+  if(si) si.value = '';
+  renderFilters();
+  renderGrid();
+}
+
+function onSearch(value){
+  searchQuery = value;
+  renderGrid();
+}
+
+function toggleCatMenu(){
+  document.getElementById('catMenu').classList.toggle('open');
+  document.getElementById('catDropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  const dropdown = document.getElementById('catDropdown');
+  if(dropdown && !dropdown.contains(e.target)){
+    document.getElementById('catMenu').classList.remove('open');
+    dropdown.classList.remove('open');
+  }
+});
+
+function renderCatMenu(){
+  const el = document.getElementById('catMenu');
+  el.innerHTML = CATS.filter(c => c.id !== 'all').map(c => {
+    const items = PRODUCTS.filter(p => p.cat === c.id);
+    const color = items[0] ? items[0].color1 : '#ccc';
+    return `
+      <div class="dropdown-item" onclick="selectCatFromMenu('${c.id}')">
+        <span class="dropdown-item-left"><span class="swatch" style="background:${color}"></span>${c.label}</span>
+        <span class="count mono">${items.length}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectCatFromMenu(id){
+  setCat(id);
+  document.getElementById('catMenu').classList.remove('open');
+  document.getElementById('catDropdown').classList.remove('open');
+  document.getElementById('grid').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function getCatLabel(catId){
+  const c = CATS.find(cat => cat.id === catId);
+  return c ? c.label : catId;
+}
+
+function cardHTML(p, i=0){
+  const media = p.image
+    ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=&quot;mini-phone&quot; style=&quot;background:linear-gradient(160deg, ${p.color1}, ${p.color2})&quot;></div>'">`
+    : `<div class="mini-phone" style="background:linear-gradient(160deg, ${p.color1}, ${p.color2})"></div>`;
+  return `
+    <div class="card reveal" style="transition-delay:${Math.min(i,8)*60}ms">
+      <div class="card-top">
+        <span class="badge" style="background:${p.color1}">${getCatLabel(p.cat)}</span>
+      </div>
+      <div class="card-media" style="background:linear-gradient(160deg, ${p.color1}22, ${p.color2}33)">
+        ${media}
+      </div>
+      <h3>${p.name}</h3>
+      <div class="tagline">${p.tagline}</div>
+      <div class="spec-strip">
+        <div><b>${p.ram}</b><span>GB RAM</span></div>
+        <div><b>${p.storage}</b><span>GB تخزين</span></div>
+        <div><b>${p.cam}</b><span>MP كاميرا</span></div>
+        <div><b>${p.battery}</b><span>mAh</span></div>
+      </div>
+      <div class="card-bottom">
+        <div class="price">${p.price.toLocaleString()} ر.س</div>
+        <button class="add-btn" onclick="addToCart('${p.id}')">أضف للسلة</button>
+      </div>
+    </div>
+  `;
+}
+
+function getFilteredProducts(){
+  let list = PRODUCTS;
+  if(activeCat !== 'all') list = list.filter(p => p.cat === activeCat);
+  if(searchQuery.trim()){
+    const q = searchQuery.trim().toLowerCase();
+    list = list.filter(p => p.name.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q));
+  }
+  return list;
+}
+
+function setupReveal(){
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal:not(.in-view)').forEach(el => observer.observe(el));
+}
+
+function renderGrid(){
+  const el = document.getElementById('grid');
+  const isSearching = searchQuery.trim().length > 0;
+
+  if(isSearching){
+    const items = getFilteredProducts();
+    el.innerHTML = `
+      <div class="brand-section">
+        <div class="brand-head">
+          <h2>نتائج البحث عن "${searchQuery}"</h2>
+          <span class="brand-count mono">${items.length} نتيجة</span>
+        </div>
+        ${items.length
+          ? `<div class="grid">${items.map((p,i) => cardHTML(p,i)).join('')}</div>`
+          : `<div class="empty-cart">ما لقينا أجهزة مطابقة 🔍<br>جرّب كلمة بحث تانية</div>`}
+      </div>
+    `;
+  } else if(activeCat === 'all'){
+    el.innerHTML = CATS.filter(c => c.id !== 'all').map(cat => {
+      const items = PRODUCTS.filter(p => p.cat === cat.id);
+      if(items.length === 0) return '';
+      return `
+        <div class="brand-section reveal">
+          <div class="brand-head">
+            <h2>${cat.label}</h2>
+            <span class="brand-count mono">${items.length} أجهزة</span>
+          </div>
+          <div class="grid">${items.map((p,i) => cardHTML(p,i)).join('')}</div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    const items = getFilteredProducts();
+    el.innerHTML = `<div class="grid">${items.map((p,i) => cardHTML(p,i)).join('')}</div>`;
+  }
+
+  setupReveal();
+}
+
+/* ===== Hero carousel (auto-rotates every 3s) ===== */
+function phoneSVG(color1, color2){
+  const gid = 'g' + Math.random().toString(36).slice(2,9);
+  return `
+    <svg viewBox="0 0 210 420" width="210" height="420" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="${color1}"/>
+          <stop offset="1" stop-color="${color2}"/>
+        </linearGradient>
+      </defs>
+      <rect x="3" y="3" width="204" height="414" rx="34" fill="#15101F"/>
+      <rect x="9" y="9" width="192" height="402" rx="28" fill="url(#${gid})"/>
+      <rect x="9" y="9" width="192" height="402" rx="28" fill="black" opacity="0.08"/>
+      <rect x="17" y="17" width="176" height="386" rx="20" fill="white" opacity="0.08"/>
+      <rect x="80" y="26" width="50" height="7" rx="3.5" fill="black" opacity="0.35"/>
+      <circle cx="105" cy="60" r="3" fill="white" opacity="0.5"/>
+      <g opacity="0.92">
+        ${[0,1,2].map(row => [0,1,2].map(col => `
+          <rect x="${34 + col*47}" y="${100 + row*68}" width="38" height="38" rx="11" fill="white" fill-opacity="0.22"/>
+        `).join('')).join('')}
+      </g>
+      <rect x="52" y="392" width="106" height="5" rx="2.5" fill="white" opacity="0.5"/>
+    </svg>
+  `;
+}
+
+function renderHero(){
+  const container = document.getElementById('heroVisual');
+  const slides = CATS.filter(c => c.id !== 'all')
+    .map(c => PRODUCTS.find(p => p.cat === c.id))
+    .filter(Boolean);
+
+  container.innerHTML = slides.map((p, i) => `
+    <div class="hero-slide ${i===0?'active':''}">
+      <div class="hero-phone">${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;">` : phoneSVG(p.color1, p.color2)}</div>
+      <div class="hero-slide-info">
+        <b>${p.name}</b>
+        <span class="mono">${p.price.toLocaleString()} ر.س</span>
+      </div>
+    </div>
+  `).join('') + `<div class="hero-dots">${slides.map((_, i) => `<span class="hero-dot ${i===0?'active':''}" onclick="goHeroSlide(${i})"></span>`).join('')}</div>`;
+
+  window._heroSlideCount = slides.length;
+  heroIndex = 0;
+  startHeroTimer();
+}
+
+function goHeroSlide(i){
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  slides.forEach(s => s.classList.remove('active'));
+  dots.forEach(d => d.classList.remove('active'));
+  if(slides[i]) slides[i].classList.add('active');
+  if(dots[i]) dots[i].classList.add('active');
+  heroIndex = i;
+  restartHeroTimer();
+}
+
+function startHeroTimer(){
+  heroTimer = setInterval(() => {
+    const count = window._heroSlideCount || 1;
+    goHeroSlide((heroIndex + 1) % count);
+  }, 3000);
+}
+
+function restartHeroTimer(){
+  clearInterval(heroTimer);
+  startHeroTimer();
+}
+
+function addToCart(id){
+  cart[id] = (cart[id] || 0) + 1;
+  renderCart();
+  showToast('تمت الإضافة إلى السلة ✅');
+}
+
+function changeQty(id, delta){
+  cart[id] = (cart[id] || 0) + delta;
+  if(cart[id] <= 0) delete cart[id];
+  renderCart();
+}
+
+function removeItem(id){
+  delete cart[id];
+  renderCart();
+}
+
+function getCartItems(){
+  return Object.entries(cart).map(([id, qty]) => {
+    const p = PRODUCTS.find(pr => pr.id == id);
+    return {...p, qty};
+  });
+}
+
+function renderCart(){
+  const items = getCartItems();
+  const count = items.reduce((s,i)=>s+i.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+
+  const drawerItems = document.getElementById('drawerItems');
+  if(items.length === 0){
+    drawerItems.innerHTML = `<div class="empty-cart">سلتك فارغة حاليًا.<br>تصفح الجوالات وأضف اللي بيعجبك 📱</div>`;
+  } else {
+    drawerItems.innerHTML = items.map(i => `
+      <div class="cart-item">
+        <div class="cart-thumb" style="background:linear-gradient(160deg, ${i.color1}, ${i.color2})">${i.image ? `<img src="${i.image}" alt="${i.name}" style="width:100%;height:100%;object-fit:contain;border-radius:12px;">` : ''}</div>
+        <div class="cart-item-info">
+          <h4>${i.name}</h4>
+          <div class="p mono">${(i.price*i.qty).toLocaleString()} ر.س</div>
+          <div class="qty-box">
+            <button onclick="changeQty('${i.id}', -1)">−</button>
+            <span class="mono">${i.qty}</span>
+            <button onclick="changeQty('${i.id}', 1)">+</button>
+          </div>
+        </div>
+        <button class="remove-btn" onclick="removeItem('${i.id}')">حذف</button>
+      </div>
+    `).join('');
+  }
+
+  const subtotal = items.reduce((s,i)=>s+i.price*i.qty, 0);
+  document.getElementById('subtotal').textContent = subtotal.toLocaleString() + ' ر.س';
+  document.getElementById('checkoutBtn').disabled = items.length === 0;
+}
+
+function openCart(){
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeAll(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('modal').classList.remove('show');
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+/* ===== Checkout flow ===== */
+function openCheckout(){
+  document.getElementById('overlay').classList.add('show');
+  renderCheckoutStep1();
+  document.getElementById('modal').classList.add('show');
+}
+
+function renderCheckoutStep1(){
+  document.getElementById('modalContent').innerHTML = `
+    <div class="steps"><div class="active"></div><div></div><div></div></div>
+    <h3>معلومات الشحن</h3>
+    <div class="sub">وين بدنا نوصلّك طلبك؟</div>
+    <div class="field"><label>الاسم الكامل</label><input id="ckName" placeholder="مثال: أحمد محمد"></div>
+    <div class="field"><label>رقم الجوال</label><input id="ckPhone" placeholder="05xxxxxxxx"></div>
+    <div class="field"><label>العنوان</label><input id="ckAddress" placeholder="المدينة، الحي، الشارع"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeAll()">إلغاء</button>
+      <button class="btn-confirm" onclick="validateStep1()">التالي</button>
+    </div>
+  `;
+}
+
+function validateStep1(){
+  const name = document.getElementById('ckName').value.trim();
+  const phone = document.getElementById('ckPhone').value.trim();
+  const address = document.getElementById('ckAddress').value.trim();
+  if(!name || !phone || !address){
+    showToast('عبّي كل الحقول أولاً ⚠️');
+    return;
+  }
+  ckData = {name, phone, address};
+  renderCheckoutStep2();
+}
+
+function renderCheckoutStep2(){
+  document.getElementById('modalContent').innerHTML = `
+    <div class="steps"><div class="active"></div><div class="active"></div><div></div></div>
+    <h3>طريقة الدفع</h3>
+    <div class="sub">اختر الطريقة الأنسب إلك</div>
+    <div class="pay-options">
+      <label class="pay-opt" id="opt-cod" onclick="selectPay('cod')">
+        <input type="radio" name="pay"> 💵 الدفع عند الاستلام
+      </label>
+      <label class="pay-opt" id="opt-card" onclick="selectPay('card')">
+        <input type="radio" name="pay"> 💳 بطاقة ائتمان
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="renderCheckoutStep1()">رجوع</button>
+      <button class="btn-confirm" id="confirmOrderBtn" onclick="validateStep2()">تأكيد الطلب</button>
+    </div>
+  `;
+}
+
+function selectPay(type){
+  selectedPay = type;
+  document.getElementById('opt-cod').classList.toggle('selected', type==='cod');
+  document.getElementById('opt-card').classList.toggle('selected', type==='card');
+  document.querySelectorAll('.pay-opt input').forEach(inp => inp.checked = false);
+  document.getElementById(type==='cod'?'opt-cod':'opt-card').querySelector('input').checked = true;
+}
+
+function validateStep2(){
+  if(!selectedPay){
+    showToast('اختر طريقة الدفع ⚠️');
+    return;
+  }
+
+  const btn = document.getElementById('confirmOrderBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري تأكيد الطلب...';
+
+  const orderCode = 'NB-' + Math.floor(100000 + Math.random()*900000);
+  const items = getCartItems().map(i => ({productId:i.id, name:i.name, price:i.price, qty:i.qty}));
+  const total = items.reduce((s,i) => s + i.price*i.qty, 0);
+
+  ordersCol.add({
+    orderCode,
+    customerName: ckData.name,
+    customerPhone: ckData.phone,
+    customerAddress: ckData.address,
+    paymentMethod: selectedPay,
+    items,
+    total,
+    status: 'جديد',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    document.getElementById('modalContent').innerHTML = `
+      <div class="steps"><div class="active"></div><div class="active"></div><div class="active"></div></div>
+      <div class="success-icon">✓</div>
+      <h3 style="text-align:center">تم استلام طلبك بنجاح 🎉</h3>
+      <div class="sub" style="text-align:center">رح نتواصل معك قريبًا على رقم ${ckData.phone} لتأكيد التوصيل</div>
+      <div class="order-id">${orderCode}</div>
+      <div class="modal-actions">
+        <button class="btn-confirm" style="flex:1" onclick="finishOrder()">تمام، رجوع للمتجر</button>
+      </div>
+    `;
+  }).catch(err => {
+    btn.disabled = false;
+    btn.textContent = 'تأكيد الطلب';
+    showToast('صار خطأ بتأكيد الطلب، جرب مرة تانية ⚠️');
+    console.error(err);
+  });
+}
+
+function finishOrder(){
+  cart = {};
+  selectedPay = null;
+  renderCart();
+  closeAll();
+  showToast('شكرًا لطلبك من نبضة 💜');
+}
+
+/* Initial render (empty state before Firestore data arrives), then start live sync */
+renderFilters();
+renderCatMenu();
+renderHero();
+renderGrid();
+renderCart();
+initFirestoreSync();
+</script>
+</body>
+</html>
